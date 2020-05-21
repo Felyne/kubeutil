@@ -3,7 +3,7 @@ package kube
 import (
 	"fmt"
 
-	kubeclient "github.com/maoqide/kubeutil/client"
+	kubeclient "github.com/Felyne/kubeutil/client"
 
 	appsv1 "k8s.io/api/apps/v1"
 	apierrors "k8s.io/apimachinery/pkg/api/errors"

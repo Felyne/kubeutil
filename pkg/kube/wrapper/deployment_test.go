@@ -3,7 +3,7 @@ package wrapper_test
 import (
 	"testing"
 
-	kubewrapper "github.com/maoqide/kubeutil/pkg/kube/wrapper"
+	kubewrapper "github.com/Felyne/kubeutil/pkg/kube/wrapper"
 )
 
 func TestDeployment(t *testing.T) {

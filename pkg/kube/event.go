@@ -1,7 +1,7 @@
 package kube
 
 import (
-	kubeclient "github.com/maoqide/kubeutil/client"
+	kubeclient "github.com/Felyne/kubeutil/client"
 
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/runtime"

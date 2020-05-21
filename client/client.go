@@ -5,7 +5,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/maoqide/kubeutil/utils"
+	"github.com/Felyne/kubeutil/utils"
 
 	"k8s.io/client-go/informers"
 	"k8s.io/client-go/kubernetes"

@@ -14,9 +14,9 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/gorilla/websocket"
 
-	"github.com/maoqide/kubeutil/pkg/kube"
-	"github.com/maoqide/kubeutil/webshell"
-	"github.com/maoqide/kubeutil/webshell/wsterminal"
+	"github.com/Felyne/kubeutil/pkg/kube"
+	"github.com/Felyne/kubeutil/webshell"
+	"github.com/Felyne/kubeutil/webshell/wsterminal"
 )
 
 var (
@@ -79,16 +79,14 @@ func serveWsTerminal(w http.ResponseWriter, r *http.Request) {
 		// msg := fmt.Sprintf("Invalid pod!! namespace: %s, pod: %s, container: %s", namespace, pod, containerName)
 		msg := fmt.Sprintf("Validate pod error! err: %v", err)
 		log.Println(msg)
-		pty.Write([]byte(msg))
-		pty.Done()
+		//pty.Write([]byte(msg))
 		return
 	}
 	err = client.PodBox.Exec(cmd, pty, namespace, podName, containerName)
 	if err != nil {
 		msg := fmt.Sprintf("Exec to pod error! err: %v", err)
 		log.Println(msg)
-		pty.Write([]byte(msg))
-		pty.Done()
+		//pty.Write([]byte(msg))
 	}
 	return
 }
@@ -103,3 +101,5 @@ func main() {
 	router.HandleFunc("/ws/{namespace}/{pod}/{container_name}/logs", serveLogs)
 	log.Fatal(http.ListenAndServe(*addr, router))
 }
+
+// http://localhost:8090/terminal?namespace=default&pod=demo-mychart-5f6fd88ff9-p7g2k&container_name=mychart

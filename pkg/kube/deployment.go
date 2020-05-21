@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"time"
 
-	kubeclient "github.com/maoqide/kubeutil/client"
+	kubeclient "github.com/Felyne/kubeutil/client"
 
 	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"

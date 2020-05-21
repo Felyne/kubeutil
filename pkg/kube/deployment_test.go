@@ -3,8 +3,8 @@ package kube_test
 import (
 	"testing"
 
-	"github.com/maoqide/kubeutil/pkg/kube"
-	kubewrapper "github.com/maoqide/kubeutil/pkg/kube/wrapper"
+	"github.com/Felyne/kubeutil/pkg/kube"
+	kubewrapper "github.com/Felyne/kubeutil/pkg/kube/wrapper"
 )
 
 func TestDeployment(t *testing.T) {

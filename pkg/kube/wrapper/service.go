@@ -5,7 +5,7 @@ import (
 	"errors"
 	"text/template"
 
-	"github.com/maoqide/kubeutil/pkg/kube"
+	"github.com/Felyne/kubeutil/pkg/kube"
 	corev1 "k8s.io/api/core/v1"
 )
 

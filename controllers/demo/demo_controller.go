@@ -17,7 +17,7 @@ import (
 	"k8s.io/client-go/tools/cache"
 	"k8s.io/client-go/util/workqueue"
 
-	"github.com/maoqide/kubeutil/controllers"
+	"github.com/Felyne/kubeutil/controllers"
 )
 
 type eventObj struct {

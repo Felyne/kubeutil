@@ -8,12 +8,12 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
 
-	"github.com/maoqide/kubeutil/client"
-	cmdutil "github.com/maoqide/kubeutil/cmd"
-	"github.com/maoqide/kubeutil/controllers/demo"
-	"github.com/maoqide/kubeutil/initialize"
-	"github.com/maoqide/kubeutil/options"
-	"github.com/maoqide/kubeutil/utils"
+	"github.com/Felyne/kubeutil/client"
+	cmdutil "github.com/Felyne/kubeutil/cmd"
+	"github.com/Felyne/kubeutil/controllers/demo"
+	"github.com/Felyne/kubeutil/initialize"
+	"github.com/Felyne/kubeutil/options"
+	"github.com/Felyne/kubeutil/utils"
 )
 
 // NewKubeCommand creates a *cobra.Command object with default parameters

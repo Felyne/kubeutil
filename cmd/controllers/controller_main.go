@@ -6,7 +6,7 @@ import (
 	"os"
 	"time"
 
-	"github.com/maoqide/kubeutil/cmd/controllers/app"
+	"github.com/Felyne/kubeutil/cmd/controllers/app"
 )
 
 func main() {
