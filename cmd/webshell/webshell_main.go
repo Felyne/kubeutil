@@ -103,7 +103,7 @@ func main() {
 	log.Fatal(http.ListenAndServe(*addr, router))
 }
 
-// http://localhost:8000/terminal?namespace=default&pod=demo-mychart-5f6fd88ff9-p7g2k&container_name=mychart
+// http://localhost:8090/terminal?namespace=default&pod=demo-mychart-5f6fd88ff9-p7g2k&container_name=mychart
 
 // 当使用nginx代理时，nginx对后端的proxy_read_timeout默认是60s
 // 如果websocket两端在60s内没有数据流动就会出现" close 1006 (abnormal closure): unexpected EOF"

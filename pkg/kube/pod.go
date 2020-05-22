@@ -110,7 +110,8 @@ func (b *PodBox) Exec(cmd []string, ptyHandler webshell.PtyHandler, namespace, p
 		Stderr:    true,
 		TTY:       true,
 	}, scheme.ParameterCodec)
-
+	// req.URL().String()
+	// https://10.13.84.186:6443/api/v1/namespaces/default/pods/nginx/exec?command=%2Fbin%2Fsh&container=mychart&stderr=true&stdin=true&stdout=true&tty=true
 	executor, err := remotecommand.NewSPDYExecutor(cfg, "POST", req.URL())
 	if err != nil {
 		return err
