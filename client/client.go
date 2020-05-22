@@ -13,7 +13,7 @@ import (
 	"k8s.io/client-go/tools/clientcmd"
 )
 
-var kubeConfigPath = utils.Env("KUBE_CONFIG_PATH", "config")
+var kubeConfigPath = utils.Env("KUBE_CONFIG_PATH", "/home/chen/.kube/config")
 
 var defaultDuration = time.Duration(time.Second * 5)
 var kubeClientset *kubernetes.Interface

@@ -24,31 +24,35 @@ var upgrader = func() websocket.Upgrader {
 
 // TerminalSession implements PtyHandler
 type TerminalSession struct {
-	wsConn   *websocket.Conn
-	sizeChan chan remotecommand.TerminalSize
-	doneChan chan struct{}
+	wsConn      *websocket.Conn
+	sizeChan    chan remotecommand.TerminalSize
+	doneChan    chan struct{}
+	readTimeout time.Duration
 }
 
 // NewTerminalSessionWs create TerminalSession
-func NewTerminalSessionWs(conn *websocket.Conn) *TerminalSession {
+func NewTerminalSessionWs(conn *websocket.Conn, readTimeout time.Duration) *TerminalSession {
 	return &TerminalSession{
-		wsConn:   conn,
-		sizeChan: make(chan remotecommand.TerminalSize),
-		doneChan: make(chan struct{}),
+		wsConn:      conn,
+		sizeChan:    make(chan remotecommand.TerminalSize),
+		doneChan:    make(chan struct{}),
+		readTimeout: readTimeout,
 	}
 }
 
 // NewTerminalSession create TerminalSession
-func NewTerminalSession(w http.ResponseWriter, r *http.Request, responseHeader http.Header) (*TerminalSession, error) {
+func NewTerminalSession(w http.ResponseWriter, r *http.Request, responseHeader http.Header, readTimeout time.Duration) (*TerminalSession, error) {
 	conn, err := upgrader.Upgrade(w, r, responseHeader)
 	if err != nil {
 		return nil, err
 	}
 	session := &TerminalSession{
-		wsConn:   conn,
-		sizeChan: make(chan remotecommand.TerminalSize),
-		doneChan: make(chan struct{}),
+		wsConn:      conn,
+		sizeChan:    make(chan remotecommand.TerminalSize),
+		doneChan:    make(chan struct{}),
+		readTimeout: readTimeout,
 	}
+
 	return session, nil
 }
 
@@ -69,6 +73,9 @@ func (t *TerminalSession) Next() *remotecommand.TerminalSize {
 
 // Read called in a loop from remotecommand as long as the process is running
 func (t *TerminalSession) Read(p []byte) (int, error) {
+	if err := t.wsConn.SetReadDeadline(time.Now().Add(t.readTimeout)); err != nil {
+		return 0, err
+	}
 	_, message, err := t.wsConn.ReadMessage()
 	if err != nil {
 		log.Printf("read message err: %v", err)

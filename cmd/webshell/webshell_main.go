@@ -10,6 +10,7 @@ import (
 	"log"
 	"net/http"
 	_ "net/http/pprof"
+	"time"
 
 	"github.com/gorilla/mux"
 	"github.com/gorilla/websocket"
@@ -54,7 +55,7 @@ func serveWsTerminal(w http.ResponseWriter, r *http.Request) {
 	containerName := pathParams["container_name"]
 	log.Printf("exec pod: %s, container: %s, namespace: %s\n", podName, containerName, namespace)
 
-	pty, err := wsterminal.NewTerminalSession(w, r, nil)
+	pty, err := wsterminal.NewTerminalSession(w, r, nil, 10*time.Second)
 	if err != nil {
 		log.Printf("get pty failed: %v\n", err)
 		return
@@ -79,14 +80,16 @@ func serveWsTerminal(w http.ResponseWriter, r *http.Request) {
 		// msg := fmt.Sprintf("Invalid pod!! namespace: %s, pod: %s, container: %s", namespace, pod, containerName)
 		msg := fmt.Sprintf("Validate pod error! err: %v", err)
 		log.Println(msg)
-		//pty.Write([]byte(msg))
+		pty.Write([]byte(msg))
+		pty.Done()
 		return
 	}
 	err = client.PodBox.Exec(cmd, pty, namespace, podName, containerName)
 	if err != nil {
 		msg := fmt.Sprintf("Exec to pod error! err: %v", err)
 		log.Println(msg)
-		//pty.Write([]byte(msg))
+		pty.Write([]byte(msg))
+		pty.Done()
 	}
 	return
 }
