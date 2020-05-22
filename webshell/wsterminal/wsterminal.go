@@ -17,7 +17,7 @@ import (
 var upgrader = func() websocket.Upgrader {
 	upgrader := websocket.Upgrader{}
 	upgrader.ReadBufferSize = 256
-	upgrader.WriteBufferSize = 8192
+	upgrader.WriteBufferSize = 2048
 	upgrader.HandshakeTimeout = time.Second * 2
 	upgrader.CheckOrigin = func(r *http.Request) bool {
 		return true
@@ -49,6 +49,8 @@ func NewTerminalSession(w http.ResponseWriter, r *http.Request, responseHeader h
 	if err != nil {
 		return nil, err
 	}
+	conn.SetReadLimit(4096)
+
 	session := &TerminalSession{
 		wsConn:      conn,
 		sizeChan:    make(chan remotecommand.TerminalSize),
@@ -79,8 +81,12 @@ func (t *TerminalSession) Read(p []byte) (int, error) {
 	if err := t.wsConn.SetReadDeadline(time.Now().Add(t.readTimeout)); err != nil {
 		return 0, err
 	}
+	// it will block
 	_, message, err := t.wsConn.ReadMessage()
 	if err != nil {
+		// nginx做代理的话，如果没有数据流动，默认60s就关闭与后端的连接
+		//if websocket.IsCloseError(err, websocket.CloseAbnormalClosure) {
+		//}
 		log.Printf("read message err: %v", err)
 		return copy(p, webshell.EndOfTransmission), err
 	}

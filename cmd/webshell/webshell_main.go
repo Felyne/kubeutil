@@ -55,7 +55,7 @@ func serveWsTerminal(w http.ResponseWriter, r *http.Request) {
 	containerName := pathParams["container_name"]
 	log.Printf("exec pod: %s, container: %s, namespace: %s\n", podName, containerName, namespace)
 
-	pty, err := wsterminal.NewTerminalSession(w, r, nil, 30*time.Second)
+	pty, err := wsterminal.NewTerminalSession(w, r, nil, 600*time.Second)
 	if err != nil {
 		log.Printf("get pty failed: %v\n", err)
 		return
@@ -103,4 +103,8 @@ func main() {
 	log.Fatal(http.ListenAndServe(*addr, router))
 }
 
-// http://localhost:8090/terminal?namespace=default&pod=demo-mychart-5f6fd88ff9-p7g2k&container_name=mychart
+// http://localhost:8000/terminal?namespace=default&pod=demo-mychart-5f6fd88ff9-p7g2k&container_name=mychart
+
+// 当使用nginx代理时，nginx对后端的proxy_read_timeout默认是60s
+// 如果websocket两端在60s内没有数据流动就会出现" close 1006 (abnormal closure): unexpected EOF"
+// 所以一端要定时发送心跳包(< proxy_read_timeout)
