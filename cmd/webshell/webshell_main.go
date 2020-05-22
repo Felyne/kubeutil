@@ -55,7 +55,7 @@ func serveWsTerminal(w http.ResponseWriter, r *http.Request) {
 	containerName := pathParams["container_name"]
 	log.Printf("exec pod: %s, container: %s, namespace: %s\n", podName, containerName, namespace)
 
-	pty, err := wsterminal.NewTerminalSession(w, r, nil, 10*time.Second)
+	pty, err := wsterminal.NewTerminalSession(w, r, nil, 30*time.Second)
 	if err != nil {
 		log.Printf("get pty failed: %v\n", err)
 		return
@@ -81,7 +81,6 @@ func serveWsTerminal(w http.ResponseWriter, r *http.Request) {
 		msg := fmt.Sprintf("Validate pod error! err: %v", err)
 		log.Println(msg)
 		pty.Write([]byte(msg))
-		pty.Done()
 		return
 	}
 	err = client.PodBox.Exec(cmd, pty, namespace, podName, containerName)
@@ -89,7 +88,6 @@ func serveWsTerminal(w http.ResponseWriter, r *http.Request) {
 		msg := fmt.Sprintf("Exec to pod error! err: %v", err)
 		log.Println(msg)
 		pty.Write([]byte(msg))
-		pty.Done()
 	}
 	return
 }

@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 	"time"
+	"unicode/utf8"
 
 	"github.com/gorilla/websocket"
 	"k8s.io/client-go/tools/remotecommand"
@@ -15,6 +16,8 @@ import (
 
 var upgrader = func() websocket.Upgrader {
 	upgrader := websocket.Upgrader{}
+	upgrader.ReadBufferSize = 256
+	upgrader.WriteBufferSize = 8192
 	upgrader.HandshakeTimeout = time.Second * 2
 	upgrader.CheckOrigin = func(r *http.Request) bool {
 		return true
@@ -104,9 +107,10 @@ func (t *TerminalSession) Read(p []byte) (int, error) {
 
 // Write called from remotecommand whenever there is any output
 func (t *TerminalSession) Write(p []byte) (int, error) {
+	content := removeInvalidUTF8(string(p))
 	msg, err := json.Marshal(webshell.TerminalMessage{
 		Operation: "stdout",
-		Data:      string(p),
+		Data:      content,
 	})
 	if err != nil {
 		log.Printf("write parse message err: %v", err)
@@ -122,4 +126,21 @@ func (t *TerminalSession) Write(p []byte) (int, error) {
 // Close close session
 func (t *TerminalSession) Close() error {
 	return t.wsConn.Close()
+}
+
+func removeInvalidUTF8(str string) string {
+	if utf8.ValidString(str) {
+		return str
+	}
+	resRune := make([]rune, 0, len(str))
+	for index, _rune := range str {
+		if _rune == utf8.RuneError {
+			_, size := utf8.DecodeRuneInString(str[index:])
+			if size == 1 {
+				continue
+			}
+		}
+		resRune = append(resRune, _rune)
+	}
+	return string(resRune)
 }
